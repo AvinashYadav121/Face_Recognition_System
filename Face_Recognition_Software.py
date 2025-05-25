@@ -16,6 +16,7 @@ from attendance import Attendance
 from developer import Developer
 from Help import Helpsupport
 import os
+import psycopg2
 
 
 class Login:
@@ -29,19 +30,14 @@ class Login:
         self.var_sa=StringVar()
         self.var_pwd=StringVar()
 
-        self.bg=ImageTk.PhotoImage(file=r"coll_Images\loginBg1.jpg")
+        bg_path = r"coll_Images/loginBg1.jpg"
         
-        lb1_bg=Label(self.root,image=self.bg)
-        lb1_bg.place(x=0,y=0, relwidth=1,relheight=1)
 
         frame1= Frame(self.root,bg="#002B53")
         frame1.place(x=560,y=170,width=340,height=450)
 
-        img1=Image.open(r"coll_Images\log1.png")
-        img1=img1.resize((100,100),Image.LANCZOS)
-        self.photoimage1=ImageTk.PhotoImage(img1)
-        lb1img1 = Label(image=self.photoimage1,bg="#002B53")
-        lb1img1.place(x=690,y=175, width=100,height=100)
+        log1_path = r"coll_Images/log1.png"
+        
 
         get_str = Label(frame1,text="Login",font=("times new roman",20,"bold"),fg="white",bg="#002B53")
         get_str.place(x=140,y=100)
@@ -92,25 +88,34 @@ class Login:
             messagebox.showinfo("Sussessfully","Welcome to Attendance Managment System Using Facial Recognition")
         else:
             # messagebox.showerror("Error","Please Check Username or Password !")
-            conn = mysql.connector.connect(username='root', password='Avinash@786',host='localhost',database='face_recognition',port=3306)
-            mycursor = conn.cursor()
-            mycursor.execute("select * from regteach where email=%s and pwd=%s",(
-                self.txtuser.get(),
-                self.txtpwd.get()
-            ))
-            row=mycursor.fetchone()
-            if row==None:
-                messagebox.showerror("Error","Invalid Username and Password!")
-            else:
-                open_min=messagebox.askyesno("YesNo","Access only Admin")
-                if open_min>0:
-                    self.new_window=Toplevel(self.root)
-                    self.app=Face_Recognition_System(self.new_window)
+            try:
+                conn = psycopg2.connect(
+                    dbname='face_recognition',
+                    user='root',
+                    password='Avinash@786',
+                    host='localhost',
+                    port=5432
+                )
+                mycursor = conn.cursor()
+                mycursor.execute("SELECT * FROM regteach WHERE email=%s AND pwd=%s", (
+                    self.txtuser.get(),
+                    self.txtpwd.get()
+                ))
+                row = mycursor.fetchone()
+                if row is None:
+                    messagebox.showerror("Error", "Invalid Username and Password!")
                 else:
-                    if not open_min:
-                        return
-            conn.commit()
-            conn.close()
+                    open_min = messagebox.askyesno("YesNo", "Access only Admin")
+                    if open_min > 0:
+                        self.new_window = Toplevel(self.root)
+                        self.app = Face_Recognition_System(self.new_window)
+                    else:
+                        if not open_min:
+                            return
+                conn.commit()
+                conn.close()
+            except Exception as e:
+                messagebox.showerror("Database Error", f"Error connecting to database:\n{e}")
 #=======================Reset Passowrd Function=============================
     def reset_pass(self):
         if self.var_ssq.get()=="Select":
@@ -120,14 +125,20 @@ class Login:
         elif(self.var_pwd.get()==""):
             messagebox.showerror("Error","Please Enter the New Password!",parent=self.root2)
         else:
-            conn = mysql.connector.connect(username='root', password='Avinash@786',host='localhost',database='face_recognition',port=3306)
+            conn = psycopg2.connect(
+            dbname='face_recognition',
+            user='root',
+            password='Avinash@786',
+            host='localhost',
+            port=5432
+            )
             mycursor = conn.cursor()
-            query=("select * from regteach where email=%s and ss_que=%s and s_ans=%s")
-            value=(self.txtuser.get(),self.var_ssq.get(),self.var_sa.get())
-            mycursor.execute(query,value)
-            row=mycursor.fetchone()
-            if row==None:
-                messagebox.showerror("Error","Please Enter the Correct Answer!",parent=self.root2)
+            query = "SELECT * FROM regteach WHERE email=%s AND ss_que=%s AND s_ans=%s"
+            value = (self.txtuser.get(), self.var_ssq.get(), self.var_sa.get())
+            mycursor.execute(query, value)
+            row = mycursor.fetchone()
+            if row is None:
+                messagebox.showerror("Error", "Please Enter the Correct Answer!", parent=self.root2)
             else:
                 query=("update regteach set pwd=%s where email=%s")
                 value=(self.var_pwd.get(),self.txtuser.get())
@@ -145,7 +156,13 @@ class Login:
         if self.txtuser.get()=="":
             messagebox.showerror("Error","Please Enter the Email ID to reset Password!")
         else:
-            conn = mysql.connector.connect(username='root', password='Avinash@786',host='localhost',database='face_recognition',port=3306)
+            conn = psycopg2.connect(
+                dbname='face_recognition',
+                user='root',
+                password='Avinash@786',
+                host='localhost',
+                port=5432
+            )
             mycursor = conn.cursor()
             query=("select * from regteach where email=%s")
             value=(self.txtuser.get(),)
@@ -208,7 +225,7 @@ class Face_Recognition_System:
 
 
       
-      img=Image.open(r"coll_Images\background.jpg")
+      img=Image.open(r"coll_Images/background.jpg")
       img=img.resize((500,130),Image.Resampling.LANCZOS)
       self.photoimg=ImageTk.PhotoImage(img)
 
@@ -218,7 +235,7 @@ class Face_Recognition_System:
     # SecondImage
 
 
-      img1=Image.open(r"coll_Images\background.jpg")
+      img1=Image.open(r"coll_Images/background.jpg")
       img1=img1.resize((500,130),Image.Resampling.LANCZOS)
       self.photoimg1=ImageTk.PhotoImage(img1)
 
@@ -226,7 +243,7 @@ class Face_Recognition_System:
       f_lbl.place(x=500,y=0,width=500,height=130)
 
     # thirdImage
-      img2=Image.open(r"coll_Images\background.jpg")
+      img2=Image.open(r"coll_Images/background.jpg")
       img2=img2.resize((1000,130),Image.Resampling.LANCZOS)
       self.photoimg2=ImageTk.PhotoImage(img2)
 
@@ -235,7 +252,7 @@ class Face_Recognition_System:
 
 
   # backgroundImage
-      img3=Image.open(r"coll_Images\background.jpg")
+      img3=Image.open(r"coll_Images/background.jpg")
       img3=img3.resize((1530,710),Image.Resampling.LANCZOS)
       self.photoimg3=ImageTk.PhotoImage(img3)
 
@@ -259,7 +276,7 @@ class Face_Recognition_System:
       # buttons
 
 
-      img4=Image.open(r"coll_Images\student_details.jpg")
+      img4=Image.open(r"coll_Images/student_details.jpg")
       img4=img4.resize((220,220),Image.Resampling.LANCZOS)
       self.photoimg4=ImageTk.PhotoImage(img4)
 
@@ -270,7 +287,7 @@ class Face_Recognition_System:
       b1_1.place(x=200,y=300,width=220,height=40)
 
 # face button
-      img5=Image.open(r"coll_Images\face_detector.jpg")
+      img5=Image.open(r"coll_Images/face_detector.jpg")
       img5=img5.resize((220,220),Image.Resampling.LANCZOS)
       self.photoimg5=ImageTk.PhotoImage(img5)
 
@@ -283,7 +300,7 @@ class Face_Recognition_System:
 
 #   Attendance
       
-      img6=Image.open(r"coll_Images\attendance.jpg")
+      img6=Image.open(r"coll_Images/attendance.jpg")
       img6=img6.resize((220,220),Image.Resampling.LANCZOS)
       self.photoimg6=ImageTk.PhotoImage(img6)
 
@@ -295,7 +312,7 @@ class Face_Recognition_System:
 
 
 # help
-      img7=Image.open(r"coll_Images\hlp.jpg")
+      img7=Image.open(r"coll_Images/hlp.jpg")
       img7=img7.resize((220,220),Image.Resampling.LANCZOS)
       self.photoimg7=ImageTk.PhotoImage(img7)
 
@@ -308,7 +325,7 @@ class Face_Recognition_System:
 
 # train
 
-      img8=Image.open(r"coll_Images\Train_Data.jpg")
+      img8=Image.open(r"coll_Images/Train_Data.jpg")
       img8=img8.resize((220,220),Image.Resampling.LANCZOS)
       self.photoimg8=ImageTk.PhotoImage(img8)
 
@@ -320,7 +337,7 @@ class Face_Recognition_System:
 
 # photo button
 
-      img9=Image.open(r"coll_Images\Photos.jpg")
+      img9=Image.open(r"coll_Images/Photos.jpg")
       img9=img9.resize((220,220),Image.Resampling.LANCZOS)
       self.photoimg9=ImageTk.PhotoImage(img9)
 
@@ -332,7 +349,7 @@ class Face_Recognition_System:
 
 
 # developer
-      img10=Image.open(r"coll_Images\developer.jpg")
+      img10=Image.open(r"coll_Images/developer.jpg")
       img10=img10.resize((220,220),Image.Resampling.LANCZOS)
       self.photoimg10=ImageTk.PhotoImage(img10)
 
@@ -344,7 +361,7 @@ class Face_Recognition_System:
 
 
       # exit
-      img11=Image.open(r"coll_Images\exit.jpg")
+      img11=Image.open(r"coll_Images/exit.jpg")
       img11=img11.resize((220,220),Image.Resampling.LANCZOS)
       self.photoimg11=ImageTk.PhotoImage(img11)
 

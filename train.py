@@ -23,7 +23,7 @@ class Train:
 
 # top image
 
-      img_top=Image.open(r"coll_Images\face.jpg")
+      img_top=Image.open(r"coll_Images/face.jpg")
       img_top=img_top.resize((1530,725),Image.Resampling.LANCZOS)
       self.photoimg_top=ImageTk.PhotoImage(img_top)
 

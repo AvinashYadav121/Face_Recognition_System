@@ -10,7 +10,7 @@ class Developer:
 
 # This part is image labels setting start 
         # first header image  
-        img=Image.open(r"coll_Images\banner.jpg")
+        img=Image.open(r"coll_Images/banner.jpg")
         img=img.resize((1530,130),Image.LANCZOS)
         self.photoimg=ImageTk.PhotoImage(img)
 
@@ -19,7 +19,7 @@ class Developer:
         f_lb1.place(x=0,y=0,width=1530,height=130)
 
         # backgorund image 
-        bg1=Image.open(r"coll_Images\bg4.png")
+        bg1=Image.open(r"coll_Images/bg4.png")
         bg1=bg1.resize((1530,768),Image.LANCZOS)
         self.photobg1=ImageTk.PhotoImage(bg1)
 
@@ -35,7 +35,7 @@ class Developer:
         # Create buttons below the section 
         # ------------------------------------------------------------------------------------------------------------------- 
         # student button 1
-        std_img_btn=Image.open(r"coll_Images\goku.jpg")
+        std_img_btn=Image.open(r"coll_Images/goku.jpg")
         std_img_btn=std_img_btn.resize((180,180),Image.LANCZOS)
         self.std_img1=ImageTk.PhotoImage(std_img_btn)
 
@@ -47,7 +47,7 @@ class Developer:
 
       
          # Attendance System  button 3
-        att_img_btn=Image.open(r"coll_Images\1q.jpg")
+        att_img_btn=Image.open(r"coll_Images/1q.jpg")
         att_img_btn=att_img_btn.resize((180,180),Image.LANCZOS)
         self.att_img1=ImageTk.PhotoImage(att_img_btn)
 
@@ -58,7 +58,7 @@ class Developer:
         att_b1_1.place(x=600,y=380,width=180,height=45)
 
          # Help  Support  button 4
-        hlp_img_btn=Image.open(r"coll_Images\baki.jpg")
+        hlp_img_btn=Image.open(r"coll_Images/baki.jpg")
         hlp_img_btn=hlp_img_btn.resize((180,180),Image.LANCZOS)
         self.hlp_img1=ImageTk.PhotoImage(hlp_img_btn)
 

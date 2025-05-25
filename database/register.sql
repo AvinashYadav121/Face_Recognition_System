@@ -22,6 +22,8 @@
 DROP TABLE IF EXISTS `regteach`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `regteach` (
   `fname` varchar(45) DEFAULT NULL,
   `lname` varchar(45) DEFAULT NULL,
@@ -39,7 +41,10 @@ CREATE TABLE `regteach` (
 
 LOCK TABLES `regteach` WRITE;
 /*!40000 ALTER TABLE `regteach` DISABLE KEYS */;
-INSERT INTO `regteach` VALUES ('q','q','12','12','Your Date of Birth','q','1212'),('avinash','yadav','8077042380','gmail.com','Your Date of Birth','13','password'),('raaaa','llla','12','2121','Your Nick Name','1','2121');
+INSERT INTO `regteach` (`fname`, `lname`, `cnum`, `email`, `ssq`, `sa`, `pwd`) VALUES 
+('q','q','12','12','Your Date of Birth','q','1212'),
+
+
 /*!40000 ALTER TABLE `regteach` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,3 +58,15 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2024-11-20 23:01:44
+
+-- psql databse query
+-- CREATE TABLE regteach (
+--   id SERIAL PRIMARY KEY,
+--   fname VARCHAR(45) NOT NULL,
+--   lname VARCHAR(45) NOT NULL,
+--   cnum VARCHAR(15) NOT NULL,
+--   email VARCHAR(100) NOT NULL UNIQUE,
+--   ssq VARCHAR(100) NOT NULL,
+--   sa VARCHAR(100) NOT NULL,
+--   pwd VARCHAR(255) NOT NULL
+-- );

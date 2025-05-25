@@ -37,14 +37,14 @@ class Attendance:
 
       # image
 
-      img=Image.open(r"coll_Images\a5.png")
+      img=Image.open(r"coll_Images/a5.png")
       img=img.resize((1530,160),Image.Resampling.LANCZOS)
       self.photoimg=ImageTk.PhotoImage(img)
 
       f_lbl=Label(self.root,image=self.photoimg)
       f_lbl.place(x=0,y=0,width=1530,height=160)
 
-      img3=Image.open(r"coll_Images\bg1.jpg")
+      img3=Image.open(r"coll_Images/bg1.jpg")
       img3=img3.resize((1530,710),Image.Resampling.LANCZOS)
       self.photoimg3=ImageTk.PhotoImage(img3)
 
@@ -59,7 +59,7 @@ class Attendance:
       Left_frame=LabelFrame(main_frame,bd=2,bg="white",relief=RIDGE,text="Student Attendance Details",font=("times new roman",12,"bold"))
       Left_frame.place(x=10,y=10,width=770,height=580)
 
-      img_left=Image.open(r"coll_Images\s2.jpg")
+      img_left=Image.open(r"coll_Images/s2.jpg")
       img_left=img_left.resize((750,200),Image.Resampling.LANCZOS)
       self.photoimg_left=ImageTk.PhotoImage(img_left)
 

@@ -2,7 +2,8 @@ from tkinter import*
 from tkinter import ttk
 from PIL import Image,ImageTk
 from tkinter import messagebox
-import mysql.connector
+import psycopg2
+# import mysql.connector
 
 class Register:
     def __init__(self,root):
@@ -21,7 +22,7 @@ class Register:
         self.var_cpwd=StringVar()
         self.var_check=IntVar()
 
-        self.bg=ImageTk.PhotoImage(file=r"coll_Images\bgReg.jpg")
+        self.bg=ImageTk.PhotoImage(file=r"coll_Images/bgReg.jpg")
         
         lb1_bg=Label(self.root,image=self.bg)
         lb1_bg.place(x=0,y=0, relwidth=1,relheight=1)
@@ -30,7 +31,7 @@ class Register:
         frame.place(x=100,y=80,width=900,height=580)
         
 
-        # img1=Image.open(r"coll_Images\reg1.png")
+        # img1=Image.open(r"coll_Images/reg1.png")
         # img1=img1.resize((450,100),Image.ANTIALIAS)
         # self.photoimage1=ImageTk.PhotoImage(img1)
         # lb1img1 = Label(image=self.photoimage1,bg="#F2F2F2")
@@ -131,41 +132,47 @@ class Register:
 
 
 
-
-    def reg(self):
-        if (self.var_fname.get()=="" or self.var_lname.get()=="" or self.var_cnum.get()=="" or self.var_email.get()=="" or self.var_ssq.get()=="Select" or self.var_sa.get()=="" or self.var_pwd.get()=="" or self.var_cpwd.get()==""):
-            messagebox.showerror("Error","All Field Required!")
-        elif(self.var_pwd.get() != self.var_cpwd.get()):
-            messagebox.showerror("Error","Please Enter Password & Confirm Password are Same!")
-        elif(self.var_check.get()==0):
-            messagebox.showerror("Error","Please Check the Agree Terms and Conditons!")
-        else:
-            # messagebox.showinfo("Successfully","Successfully Register!")
-            try:
-                conn = mysql.connector.connect(username='root', password='Avinash@786',host='localhost',database='face_recognition',port=3306)
-                mycursor = conn.cursor()
-                query=("select * from regteach where email=%s")
-                value=(self.var_email.get(),)
-                mycursor.execute(query,value)
-                row=mycursor.fetchone()
-                if row!=None:
-                    messagebox.showerror("Error","User already exist,please try another email")
-                else:
-                    mycursor.execute("insert into regteach values(%s,%s,%s,%s,%s,%s,%s)",(
-                    self.var_fname.get(),
-                    self.var_lname.get(),
-                    self.var_cnum.get(),
-                    self.var_email.get(),
-                    self.var_ssq.get(),
-                    self.var_sa.get(),
-                    self.var_pwd.get()
-                    ))
-
-                    conn.commit()
-                    conn.close()
-                    messagebox.showinfo("Success","Successfully Registerd!",parent=self.root)
-            except Exception as es:
-                messagebox.showerror("Error",f"Due to: {str(es)}",parent=self.root)
+        def reg(self):
+            if (self.var_fname.get()=="" or self.var_lname.get()=="" or self.var_cnum.get()=="" or self.var_email.get()=="" or self.var_ssq.get()=="Select" or self.var_sa.get()=="" or self.var_pwd.get()=="" or self.var_cpwd.get()==""):
+                messagebox.showerror("Error","All Field Required!")
+            elif(self.var_pwd.get() != self.var_cpwd.get()):
+                messagebox.showerror("Error","Please Enter Password & Confirm Password are Same!")
+            elif(self.var_check.get()==0):
+                messagebox.showerror("Error","Please Check the Agree Terms and Conditons!")
+            else:
+                try:
+                    conn = psycopg2.connect(
+                        user='postgres',
+                        password='123',
+                        host='postgres',
+                        database='face_recognition',
+                        port=5432
+                    )
+                    mycursor = conn.cursor()
+                    query = "SELECT * FROM regteach WHERE email=%s"
+                    value = (self.var_email.get(),)
+                    mycursor.execute(query, value)
+                    row = mycursor.fetchone()
+                    if row is not None:
+                        messagebox.showerror("Error", "User already exist,please try another email")
+                    else:
+                        mycursor.execute(
+                            "INSERT INTO regteach (fname, lname, cnum, email, ssq, sa, pwd) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                            (
+                                self.var_fname.get(),
+                                self.var_lname.get(),
+                                self.var_cnum.get(),
+                                self.var_email.get(),
+                                self.var_ssq.get(),
+                                self.var_sa.get(),
+                                self.var_pwd.get()
+                            )
+                        )
+                        conn.commit()
+                        conn.close()
+                        messagebox.showinfo("Success", "Successfully Registered!", parent=self.root)
+                except Exception as es:
+                    messagebox.showerror("Error", f"Due to: {str(es)}", parent=self.root)
 
 
 
