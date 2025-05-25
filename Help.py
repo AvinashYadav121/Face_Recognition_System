@@ -10,7 +10,7 @@ class Helpsupport:
 
 # This part is image labels setting start 
         # first header image 
-        img=Image.open(r"coll_Images\banner.jpg")
+        img=Image.open(r"coll_Images/banner.jpg")
         img=img.resize((1530,130),Image.LANCZOS)
         self.photoimg=ImageTk.PhotoImage(img)
 
@@ -19,7 +19,7 @@ class Helpsupport:
         f_lb1.place(x=0,y=0,width=1530,height=130)
 
         # backgorund image 
-        bg1=Image.open(r"coll_Images\bg4.png")
+        bg1=Image.open(r"coll_Images/bg4.png")
         bg1=bg1.resize((1530,768),Image.LANCZOS)
         self.photobg1=ImageTk.PhotoImage(bg1)
 
@@ -35,7 +35,7 @@ class Helpsupport:
         # Create buttons below the section 
         # ------------------------------------------------------------------------------------------------------------------- 
         # website
-        std_img_btn=Image.open(r"coll_Images\web.png")
+        std_img_btn=Image.open(r"coll_Images/web.png")
         std_img_btn=std_img_btn.resize((180,180),Image.LANCZOS)
         self.std_img1=ImageTk.PhotoImage(std_img_btn)
 
@@ -46,7 +46,7 @@ class Helpsupport:
         std_b1_1.place(x=250,y=380,width=180,height=45)
 
         # facebook 
-        det_img_btn=Image.open(r"coll_Images\fb.png")
+        det_img_btn=Image.open(r"coll_Images/fb.png")
         det_img_btn=det_img_btn.resize((180,180),Image.LANCZOS)
         self.det_img1=ImageTk.PhotoImage(det_img_btn)
 
@@ -57,7 +57,7 @@ class Helpsupport:
         det_b1_1.place(x=520,y=380,width=180,height=45)
 
          # youtube
-        att_img_btn=Image.open(r"coll_Images\yt.png")
+        att_img_btn=Image.open(r"coll_Images/yt.png")
         att_img_btn=att_img_btn.resize((180,180),Image.LANCZOS)
         self.att_img1=ImageTk.PhotoImage(att_img_btn)
 
@@ -68,7 +68,7 @@ class Helpsupport:
         att_b1_1.place(x=750,y=380,width=180,height=45)
 
          # gmail
-        hlp_img_btn=Image.open(r"coll_Images\gmail.png")
+        hlp_img_btn=Image.open(r"coll_Images/gmail.png")
         hlp_img_btn=hlp_img_btn.resize((180,180),Image.LANCZOS)
         self.hlp_img1=ImageTk.PhotoImage(hlp_img_btn)
 

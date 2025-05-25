@@ -3,9 +3,8 @@ from tkinter import ttk
 from PIL import Image,ImageTk
 from tkinter import messagebox
 from tkcalendar import DateEntry
-import mysql.connector
 import cv2
-
+import psycopg2
 
 class Student:
     def __init__(self,root):
@@ -40,7 +39,7 @@ class Student:
 
        # firstImage
 
-      img=Image.open(r"coll_Images\student1.png")
+      img=Image.open(r"coll_Images/student1.png")
       img=img.resize((1500,160),Image.Resampling.LANCZOS)
       self.photoimg=ImageTk.PhotoImage(img)
 
@@ -50,7 +49,7 @@ class Student:
     
 
 # backgroundImage
-      img3=Image.open(r"coll_Images\bg1.jpg")
+      img3=Image.open(r"coll_Images/bg1.jpg")
       img3=img3.resize((1530,810),Image.Resampling.LANCZOS)
       self.photoimg3=ImageTk.PhotoImage(img3)
 
@@ -69,7 +68,7 @@ class Student:
 
 
 
-      img_left=Image.open(r"coll_Images\s1.jpg")
+      img_left=Image.open(r"coll_Images/s1.jpg")
       img_left=img_left.resize((750,130),Image.Resampling.LANCZOS)
       self.photoimg_left=ImageTk.PhotoImage(img_left)
 
@@ -257,7 +256,7 @@ class Student:
       Right_frame.place(x=810,y=10,width=650,height=580)
 
 
-      img_right=Image.open(r"coll_Images\s2.jpg")
+      img_right=Image.open(r"coll_Images/s2.jpg")
       img_right=img_right.resize((750,130),Image.Resampling.LANCZOS)
       self.photoimg_right=ImageTk.PhotoImage(img_right)
 
@@ -339,262 +338,261 @@ class Student:
       self.student_table.column("photo",width=100)
 
       self.student_table.pack(fill=BOTH,expand=1)
+      self.student_table.pack(fill=BOTH,expand=1)
       self.student_table.bind("<ButtonRelease>",self.get_cursor)
       self.fetch_data()
 
-
-      # function declaration
-
+    # function declaration
     def add_data(self):
-         if self.var_dep.get()=="Select Department"or self.var_std_name.get()== "" or self.var_std_id.get()=="":
-          messagebox.showerror("error","All Fields Are Required",parent=self.root)
-         else:
-            try:
-             conn = mysql.connector.connect(host="localhost",username="root",password="Avinash@786",database="face_recogniser")
-             my_cursor=conn.cursor()
-             my_cursor.execute("insert into student values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
-                                                                                                            self.var_dep.get(),    
-                                                                                                            self.var_course.get(),
-                                                                                                            self.var_year.get(),
-                                                                                                            self.var_semester.get(),
-                                                                                                            self.var_std_id.get(),
-                                                                                                            self.var_std_name.get(),
-                                                                                                            self.var_div.get(),
-                                                                                                            self.var_roll.get(),
-                                                                                                            self.var_gender.get(),
-                                                                                                            self.var_dob.get(),
-                                                                                                            self.var_email.get(),   
-                                                                                                            self.var_phone.get(),
-                                                                                                            self.var_address.get(),
-                                                                                                            self.var_teacher.get(),
-                                                                                                            self.var_radio1.get(),
-                                                                                                     
-                                                                                                            ))
-             conn.commit()
-             self.fetch_data()
-             conn.close()
-             messagebox.showinfo("Succes","Student Details has been added Succesfully",parent = self.root)
-            except Exception as es:
-             messagebox.showerror("Error",f"Due To :{str(es)}",parent=self.root)
-       
-       
-      
-       # fetch
-    def fetch_data(self):
-          conn = mysql.connector.connect(host="localhost",username="root",password="Avinash@786",database="face_recogniser")
-          my_cursor=conn.cursor()
-          my_cursor.execute("select * from student")
-          data= my_cursor.fetchall()
-
-          if len(data)!=0:
-           self.student_table.delete(*self.student_table.get_children())
-           for i in data:
-            self.student_table.insert("",END,values=i,)
-           conn.commit()
-          conn.close() 
-
-
-            # get cursor
-    def get_cursor(self,event=""):
-               cursor_focus=self.student_table.focus()
-               content=self.student_table.item(cursor_focus)
-               data=content["values"]
-
-               self.var_dep.set(data[0]),
-               self.var_course.set(data[1]),
-               self.var_year.set(data[2]),
-               self.var_semester.set(data[3]),
-               self.var_std_id.set(data[4]),
-               self.var_std_name.set(data[5]),
-               self.var_div.set(data[6]),
-               self.var_roll.set(data[7]),
-               self.var_gender.set(data[8]),
-               self.var_dob.set(data[9]),
-               self.var_email.set(data[10]),
-               self.var_phone.set(data[11]),
-               self.var_address.set(data[12]), 
-               self.var_teacher.set(data[13]),
-               self.var_radio1.set(data[14]), 
-    
-#     update
-    def update_data(self):
-        if self.var_dep.get()=="Select Department" or self.var_std_name.get()=="" or self.var_std_id.get()=="":
-         messagebox.showerror("Error","All fields are required",parent=self.root) 
+        if self.var_dep.get() == "Select Department" or self.var_std_name.get() == "" or self.var_std_id.get() == "":
+            messagebox.showerror("Error", "All Fields Are Required", parent=self.root)
         else:
             try:
-                update=messagebox.askyesno("Update","Do You Want To Update Student detals",parent=self.root)
-                if update>0:
-                    conn=mysql.connector.connect(host="localhost",username="root",password="Avinash@786",database="face_recogniser")
-                   
-                    my_cursor=conn.cursor()
-                    my_cursor.execute("update student set Dep=%s,course=%s,Year=%s,Semester=%s,Name=%s,Division=%s,Roll=%s,Gender=%s,Dob=%s,Email=%s,Phone=%s,Address=%s,Teacher=%s,Photosample=%s  where Student_id=%s",(  
-                                                                                                                                    self.var_dep.get(), 
-                                                                                                                                    self.var_course.get(),
-                                                                                                                                    self.var_year.get(),
-                                                                                                                                    self.var_semester.get(),
-                                                                                                                                    self.var_std_name.get(),
-                                                                                                                                    self.var_div.get(),
-                                                                                                                                    self.var_roll.get(),
-                                                                                                                                    self.var_gender.get(),
-                                                                                                                                    self.var_dob.get(),
-                                                                                                                                    self.var_email.get(),
-                                                                                                                                    self.var_phone.get(),
-                                                                                                                                    self.var_address.get(),
-                                                                                                                                    self.var_teacher.get(),
-                                                                                                                                    self.var_radio1.get(),
-                                                                                                                                    self.var_std_id.get(),
-                                                                                                                                    
-
-                       
-                                                                    
-                                                                                                                                                                                   
-               ))
-                else:
-                  if not update:
-                     return
-                  
-                messagebox.showinfo("Success","Student details successfully update completed",parent=self.root)
+                conn = psycopg2.connect(
+                    host="localhost",
+                    user="postgres",
+                    password="Avinash@786",
+                    database="face_recogniser"
+                )
+                my_cursor = conn.cursor()
+                my_cursor.execute(
+                    "INSERT INTO student (Dep, course, Year, Semester, Student_id, Name, Division, Roll, Gender, Dob, Email, Phone, Address, Teacher, Photosample) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                    (
+                        self.var_dep.get(),
+                        self.var_course.get(),
+                        self.var_year.get(),
+                        self.var_semester.get(),
+                        self.var_std_id.get(),
+                        self.var_std_name.get(),
+                        self.var_div.get(),
+                        self.var_roll.get(),
+                        self.var_gender.get(),
+                        self.var_dob.get(),
+                        self.var_email.get(),
+                        self.var_phone.get(),
+                        self.var_address.get(),
+                        self.var_teacher.get(),
+                        self.var_radio1.get(),
+                    )
+                )
                 conn.commit()
                 self.fetch_data()
                 conn.close()
+                messagebox.showinfo("Success", "Student Details have been added successfully", parent=self.root)
             except Exception as es:
-             messagebox.showerror("Error",f"Due To:{str(es)}",parent=self.root) 
+                messagebox.showerror("Error", f"Due To: {str(es)}", parent=self.root)
 
-
-            #  delete functionn
-    def delete_data(self):
-      if self.var_std_id.get() == "":
-        messagebox.showerror("Error", "Student ID must be required", parent=self.root)
-      else:
-          
+    def fetch_data(self):
         try:
+            conn = psycopg2.connect(
+                host="localhost",
+                user="postgres",
+                password="Avinash@786",
+                database="face_recogniser"
+            )
+            my_cursor = conn.cursor()
+            my_cursor.execute("SELECT * FROM student")
+            data = my_cursor.fetchall()
+
+            if len(data) != 0:
+                self.student_table.delete(*self.student_table.get_children())
+                for i in data:
+                    self.student_table.insert("", END, values=i)
+            conn.commit()
+            conn.close()
+        except Exception as es:
+            messagebox.showerror("Error", f"Due To: {str(es)}", parent=self.root)
+
+    def get_cursor(self, event=None):
+        cursor_focus = self.student_table.focus()
+        content = self.student_table.item(cursor_focus)
+        data = content["values"]
+        if data:
+            self.var_dep.set(data[0])
+            self.var_course.set(data[1])
+            self.var_year.set(data[2])
+            self.var_semester.set(data[3])
+            self.var_std_id.set(data[4])
+            self.var_std_name.set(data[5])
+            self.var_div.set(data[6])
+            self.var_roll.set(data[7])
+            self.var_gender.set(data[8])
+            self.var_dob.set(data[9])
+            self.var_email.set(data[10])
+            self.var_phone.set(data[11])
+            self.var_address.set(data[12])
+            self.var_teacher.set(data[13])
+            self.var_radio1.set(data[14])
             
+def update_data(self):
+    if self.var_dep.get() == "Select Department" or self.var_std_name.get() == "" or self.var_std_id.get() == "":
+        messagebox.showerror("Error", "All fields are required", parent=self.root)
+    else:
+        try:
+            update = messagebox.askyesno("Update", "Do You Want To Update Student details", parent=self.root)
+            if update:
+                conn = psycopg2.connect(
+                    host="localhost",
+                    user="postgres",
+                    password="Avinash@786",
+                    database="face_recogniser"
+                )
+                my_cursor = conn.cursor()
+                my_cursor.execute(
+                    "UPDATE student SET Dep=%s, course=%s, Year=%s, Semester=%s, Name=%s, Division=%s, Roll=%s, Gender=%s, Dob=%s, Email=%s, Phone=%s, Address=%s, Teacher=%s, Photosample=%s WHERE Student_id=%s",
+                    (
+                        self.var_dep.get(),
+                        self.var_course.get(),
+                        self.var_year.get(),
+                        self.var_semester.get(),
+                        self.var_std_name.get(),
+                        self.var_div.get(),
+                        self.var_roll.get(),
+                        self.var_gender.get(),
+                        self.var_dob.get(),
+                        self.var_email.get(),
+                        self.var_phone.get(),
+                        self.var_address.get(),
+                        self.var_teacher.get(),
+                        self.var_radio1.get(),
+                        self.var_std_id.get(),
+                    )
+                )
+                conn.commit()
+                self.fetch_data()
+                conn.close()
+                messagebox.showinfo("Success", "Student details successfully updated", parent=self.root)
+            else:
+                return
+        except Exception as es:
+            messagebox.showerror("Error", f"Due To: {str(es)}", parent=self.root)
+
+# delete function
+def delete_data(self):
+    if self.var_std_id.get() == "":
+        messagebox.showerror("Error", "Student ID must be required", parent=self.root)
+    else:
+        try:
             # Confirm delete action with user
             delete = messagebox.askyesno("Student Delete Page", "Do you want to delete this student?", parent=self.root)
             if delete:  # If the user clicks "Yes"
-                # Connect to the database
-                conn = mysql.connector.connect(host="localhost", username="root", password="Avinash@786", database="face_recogniser")
+                # Connect to the PostgreSQL database
+                conn = psycopg2.connect(
+                    host="localhost",
+                    user="postgres",
+                    password="Avinash@786",
+                    database="face_recogniser"
+                )
                 my_cursor = conn.cursor()
-                
                 # SQL query to delete the student
                 sql = "DELETE FROM student WHERE Student_id=%s"
                 val = (self.var_std_id.get(),)
-                
                 # Execute the delete query
                 my_cursor.execute(sql, val)
-                
                 # Commit the transaction
                 conn.commit()
-                
-                # Fetch updated data (if needed)
-                self.fetch_data()  # Ensure this method is defined elsewhere
-                
+                # Fetch updated data
+                self.fetch_data()
                 # Close the connection
                 conn.close()
-                
                 # Inform the user that the deletion was successful
                 messagebox.showinfo("Delete", "Successfully deleted student details", parent=self.root)
             else:
                 return  
-            
         except Exception as es:
-            
-            messagebox.showerror("Error", f"Due to: {str(es)}", parent=self.root) 
+            messagebox.showerror("Error", f"Due to: {str(es)}", parent=self.root)
 
-
-                  #     reset 
-    def reset_data(self): 
-       self.var_dep.set("select Department") 
-       self.var_course.set("select Course") 
-       self.var_year.set("select Year") 
-       self.var_semester.set("select Semester") 
-       self.var_std_id.set("") 
-       self.var_std_name.set("") 
-       self.var_div.set("select Division") 
-       self.var_roll.set("") 
-       self.var_gender.set("Male") 
-       self.var_dob.set("") 
-       self.var_email.set("") 
-       self.var_phone.set("") 
-       self.var_address.set("") 
-       self.var_teacher.set("") 
-       self.var_radio1.set("")        
+# reset 
+def reset_data(self): 
+    self.var_dep.set("select Department") 
+    self.var_course.set("select Course") 
+    self.var_year.set("select Year") 
+    self.var_semester.set("select Semester") 
+    self.var_std_id.set("") 
+    self.var_std_name.set("") 
+    self.var_div.set("select Division") 
+    self.var_roll.set("") 
+    self.var_gender.set("Male") 
+    self.var_dob.set("") 
+    self.var_email.set("") 
+    self.var_phone.set("") 
+    self.var_address.set("") 
+    self.var_teacher.set("") 
+    self.var_radio1.set("")        
 
 # generate data set 
-      
-    def generate_dataset(self):
-        if self.var_dep.get()=="Select Department" or self.var_std_name.get()=="" or self.var_std_id.get()=="":
-         messagebox.showerror("Error","All fields are required",parent=self.root) 
-        else:
-            try:
-               conn=mysql.connector.connect(host="localhost",username="root",password="Avinash@786",database="face_recogniser")
-               my_cursor=conn.cursor()
-               my_cursor.execute("Select * from student")
-               myresult= my_cursor.fetchall()
-               id=0
-               for x in myresult:
-                     id+=1
-               my_cursor.execute("update student set Dep=%s,course=%s,Year=%s,Semester=%s,Name=%s,Division=%s,Roll=%s,Gender=%s,Dob=%s,Email=%s,Phone=%s,Address=%s,Teacher=%s,Photosample=%s  where Student_id=%s",(  
-                                                                                                                                         self.var_dep.get(), 
-                                                                                                                                         self.var_course.get(),
-                                                                                                                                         self.var_year.get(),
-                                                                                                                                         self.var_semester.get(),
-                                                                                                                                         self.var_std_name.get(),
-                                                                                                                                         self.var_div.get(),
-                                                                                                                                         self.var_roll.get(),
-                                                                                                                                         self.var_gender.get(),
-                                                                                                                                         self.var_dob.get(),
-                                                                                                                                         self.var_email.get(),
-                                                                                                                                         self.var_phone.get(),
-                                                                                                                                         self.var_address.get(),
-                                                                                                                                         self.var_teacher.get(),
-                                                                                                                                         self.var_radio1.get(),
-                                                                                                                                         self.var_std_id.get()==id+1,
-               
-                                                                                                                                          ))    
-               conn.commit()
-               self.fetch_data()
-               self.reset_data()
-               conn.close()
+def generate_dataset(self):
+    if self.var_dep.get() == "Select Department" or self.var_std_name.get() == "" or self.var_std_id.get() == "":
+        messagebox.showerror("Error", "All fields are required", parent=self.root)
+    else:
+        try:
+            # Use PostgreSQL instead of MySQL
+            conn = psycopg2.connect(
+                host="localhost",
+                user="postgres",
+                password="Avinash@786",
+                database="face_recogniser"
+            )
+            my_cursor = conn.cursor()
+            my_cursor.execute("SELECT * FROM student")
+            myresult = my_cursor.fetchall()
+            id = 0
+            for _ in myresult:
+                id += 1
 
+            my_cursor.execute(
+                "UPDATE student SET Dep=%s, course=%s, Year=%s, Semester=%s, Name=%s, Division=%s, Roll=%s, Gender=%s, Dob=%s, Email=%s, Phone=%s, Address=%s, Teacher=%s, Photosample=%s WHERE Student_id=%s",
+                (
+                    self.var_dep.get(),
+                    self.var_course.get(),
+                    self.var_year.get(),
+                    self.var_semester.get(),
+                    self.var_std_name.get(),
+                    self.var_div.get(),
+                    self.var_roll.get(),
+                    self.var_gender.get(),
+                    self.var_dob.get(),
+                    self.var_email.get(),
+                    self.var_phone.get(),
+                    self.var_address.get(),
+                    self.var_teacher.get(),
+                    self.var_radio1.get(),
+                    self.var_std_id.get(),
+                )
+            )
+            conn.commit()
+            self.fetch_data()
+            self.reset_data()
+            conn.close()
 
-                  #   load data
-               face_classifier=cv2.CascadeClassifier(r"haarcascade_frontalface_default.xml") 
-               def face_cropped(img):
-                   gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)      
-                   faces=face_classifier.detectMultiScale(gray,1.3,5)
-                   for (x,y,w,h) in faces:
-                      face_cropped=img[y:y+h,x:x+w]
-                      return face_cropped
+            #   load data
+            face_classifier = cv2.CascadeClassifier(r"haarcascade_frontalface_default.xml")
 
+            def face_cropped(img):
+                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                faces = face_classifier.detectMultiScale(gray, 1.3, 5)
+                for (x, y, w, h) in faces:
+                    face_cropped = img[y:y + h, x:x + w]
+                    return face_cropped
 
-               cap = cv2.VideoCapture(0)
-               img_id=0
-               while True:
-                  
-                  ret,my_frame=cap.read()
-                  if face_cropped(my_frame) is not None:
-                    img_id+=1
-                    face=cv2.resize(face_cropped(my_frame),(450,450))
-                    face=cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
-                    file_name_path="data/user."+str(id)+"."+str(img_id)+".jpg"
-                    cv2.imwrite(file_name_path,face)
-                    cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,2,(0,255,0),2)
-                    cv2.imshow("cropped Face",face)
+            cap = cv2.VideoCapture(0)
+            img_id = 0
+            while True:
+                _, my_frame = cap.read()
+                if face_cropped(my_frame) is not None:
+                    img_id += 1
+                    face = cv2.resize(face_cropped(my_frame), (450, 450))
+                    face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+                    file_name_path = "data/user." + str(self.var_std_id.get()) + "." + str(img_id) + ".jpg"
+                    cv2.imwrite(file_name_path, face)
+                    cv2.putText(face, str(img_id), (50, 50), cv2.FONT_HERSHEY_COMPLEX, 2, (0, 255, 0), 2)
+                    cv2.imshow("cropped Face", face)
 
-                  if cv2.waitKey(1) == 13 or int(img_id) == 100:
-                      break
-               cap.release()
-               cv2.destroyAllWindows 
-               messagebox.showinfo("Result","Generating Data sets completed!!")   
+                if cv2.waitKey(1) == 13 or int(img_id) == 100:
+                    break
+            cap.release()
+            cv2.destroyAllWindows()
+            messagebox.showinfo("Result", "Generating Data sets completed!!")
 
-            except Exception as es:
-              messagebox.showerror("Error",f"Due To:{str(es)}",parent=self.root) 
-
-
- 
-
-if __name__== "__main__":
-            root = Tk()
-            obj=Student(root)
-            root.mainloop()
+        except Exception as es:
+            messagebox.showerror("Error", f"Due To:{str(es)}", parent=self.root)
